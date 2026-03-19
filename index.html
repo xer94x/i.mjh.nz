@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free TV Channels</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap');
+:root {
+  --bg: #080b10; --surface: #0d1118; --card: #111620; --border: #1e2535;
+  --accent: #1a6fa8; --accent2: #2196f3; --accent3: #64b5f6;
+  --text: #dce3f0; --muted: #4a5570;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'Barlow', sans-serif; min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 80% 0%, rgba(26,111,168,.08) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 10% 100%, rgba(26,111,168,.05) 0%, transparent 60%);
+}
+header {
+  background: rgba(13,17,24,.95); backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border); padding: 0 28px; height: 64px;
+  display: flex; align-items: center; gap: 18px; position: sticky; top: 0; z-index: 100;
+}
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 14px;
+  color: #fff; flex-shrink: 0; box-shadow: 0 0 16px rgba(26,111,168,.4);
+}
+header h1 {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 22px;
+  letter-spacing: 4px; text-transform: uppercase;
+  background: linear-gradient(90deg, #fff 0%, var(--accent3) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.header-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+#ch-count { font-size: 12px; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; }
+#status { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+#status .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); transition: background .3s; }
+#status.ok .dot { background: #2ecc71; box-shadow: 0 0 6px #2ecc71; }
+#status.err .dot { background: #e74c3c; box-shadow: 0 0 6px #e74c3c; }
+#status.loading .dot { background: var(--accent3); animation: pulse 1s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+/* PLATFORM SELECTOR */
+.platform-bar {
+  display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 28px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+.platform-bar label {
+  font-size: 11px; color: var(--muted); font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 1px; text-transform: uppercase; margin-right: 4px;
+}
+.plat-btn {
+  background: var(--card); border: 1px solid var(--border); color: var(--muted);
+  border-radius: 20px; padding: 5px 14px; font-size: 11px;
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700; letter-spacing: .5px;
+  cursor: pointer; transition: all .2s; white-space: nowrap;
+}
+.plat-btn:hover { background: rgba(26,111,168,.15); border-color: var(--accent); color: var(--accent3); }
+.plat-btn.active { background: rgba(26,111,168,.2); border-color: var(--accent2); color: var(--accent3); }
+
+/* REGION SELECTOR */
+.region-bar {
+  display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 28px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  min-height: 44px; align-items: center;
+}
+.region-bar label {
+  font-size: 11px; color: var(--muted); font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 1px; text-transform: uppercase; margin-right: 4px;
+}
+.reg-btn {
+  background: var(--card); border: 1px solid var(--border); color: var(--muted);
+  border-radius: 16px; padding: 4px 12px; font-size: 11px;
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+  cursor: pointer; transition: all .2s; white-space: nowrap;
+}
+.reg-btn:hover { background: rgba(26,111,168,.12); border-color: var(--accent); color: var(--accent3); }
+.reg-btn.active { background: rgba(26,111,168,.2); border-color: var(--accent2); color: var(--accent3); }
+
+/* TOP BAR */
+.top-bar {
+  display: flex; align-items: center; gap: 12px; padding: 12px 28px;
+  background: var(--surface); border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+#search {
+  flex: 1; max-width: 380px; background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; padding: 9px 16px; color: var(--text);
+  font-family: 'Barlow', sans-serif; font-size: 14px; outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+#search:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(26,111,168,.12); }
+#search::placeholder { color: var(--muted); }
+#refresh-btn {
+  background: rgba(26,111,168,.12); border: 1px solid rgba(33,150,243,.35);
+  color: var(--accent3); border-radius: 8px; padding: 9px 18px;
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 13px;
+  letter-spacing: 1px; cursor: pointer; transition: background .2s;
+}
+#refresh-btn:hover { background: rgba(26,111,168,.22); }
+#refresh-btn:disabled { opacity: .35; cursor: default; }
+
+/* CAT FILTER */
+.cat-filter {
+  display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 28px;
+  background: var(--surface); border-bottom: 1px solid var(--border);
+}
+.cat-btn {
+  background: var(--card); border: 1px solid var(--border); color: var(--muted);
+  border-radius: 20px; padding: 4px 12px; font-size: 11px;
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+  cursor: pointer; transition: all .2s; white-space: nowrap;
+}
+.cat-btn:hover, .cat-btn.active { background: rgba(26,111,168,.15); border-color: var(--accent); color: var(--accent3); }
+
+#err-banner {
+  display: none; margin: 14px 28px 0; background: rgba(231,76,60,.08);
+  border: 1px solid rgba(231,76,60,.25); border-radius: 8px;
+  padding: 11px 18px; font-size: 13px; color: #ff8877;
+}
+#err-banner.show { display: block; }
+#tip {
+  display: none; margin: 12px 28px 0; padding: 9px 16px;
+  background: rgba(46,204,113,.07); border: 1px solid rgba(46,204,113,.2);
+  border-radius: 8px; font-size: 12px; color: #2ecc71;
+}
+#tip.show { display: block; }
+
+.content { padding: 24px 28px 48px; }
+.category-section { margin-bottom: 36px; }
+.category-title {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px;
+  letter-spacing: 3px; color: var(--muted); text-transform: uppercase;
+  margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.category-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+.ch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+.ch-card {
+  position: relative; aspect-ratio: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: 10px 8px 26px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  text-decoration: none; color: var(--text); cursor: pointer;
+  transition: background .15s, border-color .15s, transform .15s, box-shadow .15s; overflow: hidden;
+}
+.ch-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(26,111,168,.07) 0%, transparent 60%);
+  opacity: 0; transition: opacity .2s; border-radius: inherit;
+}
+.ch-card:hover { background: #14192a; border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(26,111,168,.18); }
+.ch-card:hover::before { opacity: 1; }
+.ch-card:active { transform: translateY(-1px); }
+.ch-num { position: absolute; top: 8px; left: 10px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent3); letter-spacing: .5px; opacity: .75; }
+.ch-logo { width: 80px; height: 80px; object-fit: contain; border-radius: 6px; }
+.ch-logo-ph {
+  width: 80px; height: 80px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 16px; color: #fff; letter-spacing: 1px; text-align: center; padding: 4px;
+}
+.ch-name { position: absolute; bottom: 7px; left: 0; right: 0; text-align: center; font-size: 10px; font-weight: 500; color: rgba(255,255,255,.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 8px; }
+.skeleton { background: linear-gradient(90deg, var(--card) 25%, #161d2e 50%, var(--card) 75%); background-size: 200% 100%; animation: shimmer 1.3s infinite; border-radius: 12px; aspect-ratio: 1; }
+@keyframes shimmer { 0% { background-position: 200%; } 100%{ background-position: -200%; } }
+.empty-state { grid-column: 1 / -1; color: var(--muted); padding: 60px; text-align: center; font-family: 'Barlow Condensed', sans-serif; font-size: 18px; letter-spacing: 2px; }
+.plat-badge {
+  position: absolute; top: 8px; right: 8px;
+  font-size: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+  background: rgba(26,111,168,.3); color: var(--accent3);
+  border-radius: 4px; padding: 1px 4px; letter-spacing: .5px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-icon">📺</div>
+  <h1>Free TV Channels</h1>
+  <div class="header-right">
+    <span id="ch-count">Seleziona piattaforma</span>
+    <div id="status">
+      <div class="dot"></div>
+      <span id="status-txt">Pronto</span>
+    </div>
+  </div>
+</header>
+
+<!-- PLATFORM -->
+<div class="platform-bar">
+  <label>Piattaforma:</label>
+</div>
+
+<!-- REGION -->
+<div class="region-bar" id="region-bar">
+  <label>Regione:</label>
+  <span style="color:var(--muted);font-size:12px;">Seleziona una piattaforma</span>
+</div>
+
+<!-- SEARCH + REFRESH -->
+<div class="top-bar">
+  <input id="search" type="text" placeholder="🔍 Cerca canale..." oninput="renderChannels()">
+  <button id="refresh-btn" onclick="loadChannels()" disabled>↺ Ricarica</button>
+</div>
+
+<!-- CAT FILTER -->
+<div class="cat-filter" id="cat-filter"></div>
+
+<div id="err-banner"></div>
+<div id="tip">✓ Playlist caricata — clicca un canale per aprire lo stream</div>
+
+<div class="content" id="content">
+  <div style="color:var(--muted);text-align:center;padding:80px;font-family:'Barlow Condensed',sans-serif;font-size:18px;letter-spacing:2px;">
+    SELEZIONA UNA PIATTAFORMA PER INIZIARE
+  </div>
+</div>
+
+<script>
+// ── CONFIGURAZIONE PIATTAFORME ──
+const PLATFORMS = {
+  "LG": {
+    label: "LG Channels",
+    regions: {
+      "it": "🇮🇹 Italia",
+      "us": "🇺🇸 USA",
+      "gb": "🇬🇧 UK",
+      "de": "🇩🇪 Germania",
+      "fr": "🇫🇷 Francia",
+      "es": "🇪🇸 Spagna",
+      "at": "🇦🇹 Austria",
+      "be": "🇧🇪 Belgio",
+      "ca": "🇨🇦 Canada",
+      "mx": "🇲🇽 Messico",
+      "au": "🇦🇺 Australia",
+      "nz": "🇳🇿 Nuova Zelanda",
+      "in": "🇮🇳 India",
+      "sg": "🇸🇬 Singapore",
+      "all": "🌐 Tutti",
+    },
+    urlFn: (region) => `https://i.mjh.nz/LG/${region}.m3u8`,
+  },
+  "PlutoTV": {
+    label: "Pluto TV",
+    regions: {
+      "us": "🇺🇸 USA",
+      "gb": "🇬🇧 UK",
+      "de": "🇩🇪 Germania",
+      "fr": "🇫🇷 Francia",
+      "es": "🇪🇸 Spagna",
+      "it": "🇮🇹 Italia",
+      "ar": "🇦🇷 Argentina",
+      "br": "🇧🇷 Brasile",
+      "ca": "🇨🇦 Canada",
+      "cl": "🇨🇱 Cile",
+      "dk": "🇩🇰 Danimarca",
+      "mx": "🇲🇽 Messico",
+      "no": "🇳🇴 Norvegia",
+      "se": "🇸🇪 Svezia",
+    },
+    urlFn: (region) => `https://i.mjh.nz/PlutoTV/${region}.m3u8`,
+  },
+  "SamsungTVPlus": {
+    label: "Samsung TV+",
+    regions: {
+      "us": "🇺🇸 USA",
+      "gb": "🇬🇧 UK",
+      "de": "🇩🇪 Germania",
+      "fr": "🇫🇷 Francia",
+      "es": "🇪🇸 Spagna",
+      "it": "🇮🇹 Italia",
+      "at": "🇦🇹 Austria",
+      "ca": "🇨🇦 Canada",
+      "ch": "🇨🇭 Svizzera",
+      "in": "🇮🇳 India",
+      "kr": "🇰🇷 Corea",
+    },
+    urlFn: (region) => `https://i.mjh.nz/SamsungTVPlus/${region}.m3u8`,
+  },
+  "Plex": {
+    label: "Plex",
+    regions: {
+      "us": "🇺🇸 USA",
+      "gb": "🇬🇧 UK",
+      "fr": "🇫🇷 Francia",
+      "es": "🇪🇸 Spagna",
+      "ca": "🇨🇦 Canada",
+      "au": "🇦🇺 Australia",
+      "nz": "🇳🇿 Nuova Zelanda",
+      "mx": "🇲🇽 Messico",
+    },
+    urlFn: (region) => `https://i.mjh.nz/Plex/${region}.m3u8`,
+  },
+  "Roku": {
+    label: "Roku",
+    regions: {
+      "all": "🌐 Tutti",
+    },
+    urlFn: (region) => `https://i.mjh.nz/Roku/all.m3u8`,
+  },
+  "PBS": {
+    label: "PBS",
+    regions: {
+      "all": "🌐 Tutti",
+    },
+    urlFn: (region) => `https://i.mjh.nz/PBS/all.m3u8`,
+  },
+  "MeTV": {
+    label: "MeTV",
+    regions: {
+      "all": "🌐 Tutti",
+    },
+    urlFn: (region) => `https://i.mjh.nz/MeTV/all.m3u8`,
+  },
+  "Binge": {
+    label: "Binge",
+    regions: {
+      "all": "🌐 Tutti",
+    },
+    urlFn: (region) => `https://i.mjh.nz/Binge/all.m3u8`,
+  },
+  "Foxtel": {
+    label: "Foxtel",
+    regions: {
+      "all": "🌐 Tutti",
+    },
+    urlFn: (region) => `https://i.mjh.nz/Foxtel/all.m3u8`,
+  },
+  "Kayo": {
+    label: "Kayo",
+    regions: {
+      "all": "🌐 Tutti",
+    },
+    urlFn: (region) => `https://i.mjh.nz/Kayo/all.m3u8`,
+  },
+  "Flash": {
+    label: "Flash",
+    regions: {
+      "all": "🌐 Tutti",
+    },
+    urlFn: (region) => `https://i.mjh.nz/Flash/all.m3u8`,
+  },
+  "DStv": {
+    label: "DStv",
+    regions: {
+      "all": "🌐 Tutti",
+    },
+    urlFn: (region) => `https://i.mjh.nz/DStv/all.m3u8`,
+  },
+  "Singtel": {
+    label: "Singtel",
+    regions: {
+      "all": "🌐 Tutti",
+    },
+    urlFn: (region) => `https://i.mjh.nz/Singtel/all.m3u8`,
+  },
+  "SkyGo": {
+    label: "Sky Go",
+    regions: {
+      "all": "🌐 Tutti",
+    },
+    urlFn: (region) => `https://i.mjh.nz/SkyGo/all.m3u8`,
+  },
+  "SkySportNow": {
+    label: "Sky Sport Now",
+    regions: {
+      "all": "🌐 Tutti",
+    },
+    urlFn: (region) => `https://i.mjh.nz/SkySportNow/all.m3u8`,
+  },
+  "frndly_tv": {
+    label: "Frndly TV",
+    regions: {
+      "all": "🌐 Tutti",
+    },
+    urlFn: (region) => `https://i.mjh.nz/frndly_tv/all.m3u8`,
+  },
+  "hgtv_go": {
+    label: "HGTV Go",
+    regions: {
+      "all": "🌐 Tutti",
+    },
+    urlFn: (region) => `https://i.mjh.nz/hgtv_go/all.m3u8`,
+  },
+};
+
+const PROXIES = [
+  "https://api.allorigins.win/raw?url=",
+  "https://corsproxy.io/?url=",
+];
+
+const LANG_MAP = [
+  { lang: "🇮🇹 Italiano",  keys: ["italian","italiano","italy"," it ","(it)","rai","mediaset","canale 5","italia 1","rete 4","la7","dmax","nove","cielo","focus","real time","tv2000","sky tg","sportitalia","boing","cartoonito"] },
+  { lang: "🇬🇧 English",   keys: ["english","united kingdom"," uk ","(uk)"," us ","(us)","united states","bbc","itv","channel 4","channel 5","sky one","discovery","nat geo","cnn","fox","nbc","abc","cbs","hbo","comedy central","cartoon network","nickelodeon","paramount","mtv","animal planet","amc","syfy"] },
+  { lang: "🇩🇪 Deutsch",   keys: ["german","deutsch","germany"," de ","(de)","ard","zdf","sat.1","pro7","rtl","kabel","vox","sixx","sport1","tagesschau"] },
+  { lang: "🇫🇷 Français",  keys: ["french","français","france"," fr ","(fr)","tf1","france 2","france 3","m6","canal+","arte","bfm","cnews","lci","gulli"] },
+  { lang: "🇪🇸 Español",   keys: ["spanish","español","spain","espana","españa"," es ","(es)","la1","la2","telecinco","antena 3","cuatro","la sexta","rtve"] },
+  { lang: "🇵🇹 Português", keys: ["portuguese","português","portugal"," pt ","(pt)","rtp","sic","tvi"] },
+  { lang: "🇧🇷 Português (BR)", keys: ["brasil","brazil"," br ","(br)","globo","record","sbt","band","sportv"] },
+  { lang: "🇳🇱 Nederlands",keys: ["dutch","netherlands","holland"," nl ","(nl)","npo","rtl4","rtl5"] },
+  { lang: "🇵🇱 Polski",    keys: ["polish","poland","polska"," pl ","(pl)","tvp","polsat","tvn"] },
+  { lang: "🇸🇪 Svenska",   keys: ["swedish","sweden","sverige"," se ","(se)","svt","tv4","kanal 5"] },
+  { lang: "🇷🇺 Русский",   keys: ["russian","russia"," ru ","(ru)","perviy","russia 1","ntv","ren tv"] },
+  { lang: "🇹🇷 Türkçe",    keys: ["turkish","turkey","türkiye"," tr ","(tr)","trt","atv","kanal d","show tv"] },
+  { lang: "🇦🇷 Español (LA)", keys: ["latin","latinoamerica","argentina","mexico","colombia","chile"," la ","(la)","telefe","azteca","univision","telemundo"] },
+  { lang: "🇨🇳 中文",       keys: ["chinese","china","taiwan","mandarin","cantonese","cctv","tvbs","phoenix tv"] },
+  { lang: "🇯🇵 日本語",     keys: ["japanese","japan"," jp ","(jp)","nhk","tv asahi","fuji tv"] },
+  { lang: "🇰🇷 한국어",     keys: ["korean","korea"," kr ","(kr)","kbs","mbc","arirang"] },
+  { lang: "🇮🇳 Hindi",     keys: ["hindi","india","indian"," in ","(in)","zee","star plus","sony","colors","aaj tak","ndtv"] },
+  { lang: "🇸🇦 عربي",      keys: ["arabic","arab","arabe"," ar ","(ar)","al jazeera","al arabiya","mbc","rotana"] },
+  { lang: "🇦🇺 Australia",  keys: ["australia","australian"," au ","(au)","abc australia","nine","seven","ten ","sbs"] },
+  { lang: "🇳🇿 New Zealand",keys: ["new zealand","zealand"," nz ","(nz)","tvnz","three nz","maori"] },
+  { lang: "🎬 Film & Serie",keys: ["movie","movies","cinema","film","serie","drama","thriller","horror","comedy","action","western","romance"] },
+  { lang: "⚽ Sport",       keys: ["sport","sports","football","soccer","tennis","golf","racing","nfl","nba","nhl","mlb","f1","motor"] },
+  { lang: "🎵 Musica",      keys: ["music","musical","mtv","vh1","radio","country music","jazz","hits","pop"] },
+  { lang: "👶 Kids",        keys: ["kid","kids","child","children","junior","junior","cartoon","anime","nickelodeon","disney","boomerang","baby"] },
+  { lang: "📰 News",        keys: ["news","noticias","nouvelles","nachrichten","tg ","tgcom","euronews","bloomberg","sky news","fox news","cnn","bbc news"] },
+  { lang: "🌿 Nature/Doc",  keys: ["nature","natural","document","discovery","national geographic","nat geo","history","science","planet","animal","wildlife"] },
+];
+
+function getCategory(name, group) {
+  const n = (" " + (name||"") + " " + (group||"") + " ").toLowerCase();
+  for (const { lang, keys } of LANG_MAP) {
+    if (keys.some(k => n.includes(k))) return lang;
+  }
+  return "🌐 Altro";
+}
+
+let channelsData = [];
+let activeCat = "Tutti";
+let activePlatform = null;
+let activeRegion = null;
+
+function setStatus(state, txt) {
+  const el = document.getElementById("status");
+  el.className = state;
+  document.getElementById("status-txt").textContent = txt;
+}
+
+function showErr(msg) {
+  const b = document.getElementById("err-banner");
+  if (msg) { b.textContent = "⚠ " + msg; b.classList.add("show"); }
+  else b.classList.remove("show");
+}
+
+function parseM3U(text) {
+  const lines = text.split('\n');
+  const channels = [];
+  let current = null;
+  for (const line of lines) {
+    const l = line.trim();
+    if (l.startsWith('#EXTINF')) {
+      current = {};
+      const nameMatch = l.match(/,(.+)$/);
+      if (nameMatch) current.name = nameMatch[1].trim();
+      const logoMatch = l.match(/tvg-logo="([^"]+)"/);
+      if (logoMatch) current.logo = logoMatch[1];
+      const numMatch = l.match(/tvg-chno="([^"]+)"/);
+      if (numMatch) current.num = parseInt(numMatch[1]) || 9999;
+      const groupMatch = l.match(/group-title="([^"]+)"/);
+      if (groupMatch) current.group = groupMatch[1];
+      const uaMatch = l.match(/user-agent="([^"]+)"/i);
+      if (uaMatch) current.userAgent = uaMatch[1];
+      const refMatch = l.match(/referrer="([^"]+)"/i) || l.match(/referer="([^"]+)"/i);
+      if (refMatch) current.referrer = refMatch[1];
+    } else if (l.startsWith('#EXTVLCOPT')) {
+      if (current) {
+        const uaVlc = l.match(/http-user-agent=(.+)$/i);
+        if (uaVlc) current.userAgent = uaVlc[1].trim();
+        const refVlc = l.match(/http-referrer=(.+)$/i);
+        if (refVlc) current.referrer = refVlc[1].trim();
+      }
+    } else if ((l.startsWith('http') || l.startsWith('rtmp')) && current) {
+      current.url = l;
+      current.cat = getCategory(current.name || '', current.group || '');
+      channels.push(current);
+      current = null;
+    }
+  }
+  return channels;
+}
+
+async function loadChannels() {
+  if (!activePlatform || !activeRegion) return;
+  document.getElementById("refresh-btn").disabled = true;
+  setStatus("loading", "Carico playlist...");
+  showErr(null);
+  document.getElementById("tip").classList.remove("show");
+  document.getElementById("content").innerHTML = `<div class="ch-grid">${'<div class="skeleton"></div>'.repeat(12)}</div>`;
+
+  const baseUrl = PLATFORMS[activePlatform].urlFn(activeRegion);
+  const sources = PROXIES.map(p => p + encodeURIComponent(baseUrl));
+
+  let text = null, lastErr = null;
+  for (let i = 0; i < sources.length; i++) {
+    try {
+      setStatus("loading", `Tentativo ${i+1}/${sources.length}...`);
+      const res = await fetch(sources[i]);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const t = await res.text();
+      if (t && t.includes('#EXTINF')) { text = t; break; }
+      throw new Error("Risposta non valida");
+    } catch(e) { lastErr = e; text = null; }
+  }
+
+  try {
+    if (!text) throw lastErr || new Error("Nessuna sorgente disponibile");
+    channelsData = parseM3U(text);
+    channelsData.sort((a, b) => (a.num || 9999) - (b.num || 9999));
+    document.getElementById("ch-count").textContent = `${channelsData.length} canali`;
+    setStatus("ok", "Online ✓");
+    document.getElementById("tip").classList.add("show");
+    activeCat = "Tutti";
+    renderCatFilter();
+    renderChannels();
+  } catch(e) {
+    setStatus("err", "Errore");
+    showErr("Impossibile caricare: " + e.message);
+    document.getElementById("content").innerHTML = "";
+    document.getElementById("ch-count").textContent = "0 canali";
+  }
+
+  document.getElementById("refresh-btn").disabled = false;
+}
+
+function selectPlatform(platKey) {
+  activePlatform = platKey;
+  activeRegion = null;
+  channelsData = [];
+
+  // Update platform buttons
+  document.querySelectorAll('.plat-btn').forEach(b => b.classList.toggle('active', b.dataset.plat === platKey));
+
+  // Render region buttons
+  const regionBar = document.getElementById("region-bar");
+  regionBar.innerHTML = '<label>Regione:</label>';
+  const regions = PLATFORMS[platKey].regions;
+  const keys = Object.keys(regions);
+
+  keys.forEach(rk => {
+    const btn = document.createElement("button");
+    btn.className = "reg-btn";
+    btn.dataset.reg = rk;
+    btn.textContent = regions[rk];
+    btn.onclick = () => selectRegion(rk);
+    regionBar.appendChild(btn);
+  });
+
+  // Auto-select if only one region
+  if (keys.length === 1) {
+    selectRegion(keys[0]);
+  } else {
+    document.getElementById("content").innerHTML = `<div style="color:var(--muted);text-align:center;padding:80px;font-family:'Barlow Condensed',sans-serif;font-size:18px;letter-spacing:2px;">SELEZIONA UNA REGIONE</div>`;
+    document.getElementById("ch-count").textContent = "Seleziona regione";
+    document.getElementById("cat-filter").innerHTML = "";
+    document.getElementById("tip").classList.remove("show");
+    showErr(null);
+    setStatus("", "Pronto");
+  }
+}
+
+function selectRegion(regKey) {
+  activeRegion = regKey;
+  document.querySelectorAll('.reg-btn').forEach(b => b.classList.toggle('active', b.dataset.reg === regKey));
+  document.getElementById("refresh-btn").disabled = false;
+  loadChannels();
+}
+
+function renderPlatformBar() {
+  const bar = document.querySelector('.platform-bar');
+  bar.innerHTML = '<label>Piattaforma:</label>';
+  Object.keys(PLATFORMS).forEach(pk => {
+    const btn = document.createElement("button");
+    btn.className = "plat-btn";
+    btn.dataset.plat = pk;
+    btn.textContent = PLATFORMS[pk].label;
+    btn.onclick = () => selectPlatform(pk);
+    bar.appendChild(btn);
+  });
+}
+
+function renderCatFilter() {
+  const el = document.getElementById("cat-filter");
+  el.innerHTML = "";
+  const existingCats = new Set(channelsData.map(c => c.cat));
+  const allCats = ["Tutti", ...LANG_MAP.map(l => l.lang), "🌐 Altro"];
+  const sorted = allCats.filter(c => c === "Tutti" || existingCats.has(c));
+  sorted.forEach(cat => {
+    const btn = document.createElement("button");
+    btn.className = "cat-btn" + (cat === activeCat ? " active" : "");
+    btn.textContent = cat;
+    btn.onclick = () => { activeCat = cat; renderCatFilter(); renderChannels(); };
+    el.appendChild(btn);
+  });
+}
+
+function renderChannels() {
+  const q = document.getElementById("search").value.toLowerCase();
+  const filtered = channelsData.filter(c => {
+    const ms = !q || (c.name||'').toLowerCase().includes(q) || String(c.num).includes(q);
+    const mc = activeCat === "Tutti" || c.cat === activeCat;
+    return ms && mc;
+  });
+
+  const groups = {};
+  for (const ch of filtered) {
+    if (!groups[ch.cat]) groups[ch.cat] = [];
+    groups[ch.cat].push(ch);
+  }
+
+  const content = document.getElementById("content");
+  content.innerHTML = "";
+
+  if (filtered.length === 0) {
+    const g = document.createElement("div");
+    g.className = "ch-grid";
+    g.innerHTML = '<div class="empty-state">NESSUN CANALE TROVATO</div>';
+    content.appendChild(g);
+    document.getElementById("ch-count").textContent = `0 / ${channelsData.length} canali`;
+    return;
+  }
+
+  document.getElementById("ch-count").textContent = `${filtered.length} / ${channelsData.length} canali`;
+
+  const catOrder = ["Tutti", ...LANG_MAP.map(l => l.lang), "🌐 Altro"];
+  const sortedCats = [...new Set([...catOrder, ...Object.keys(groups)])].filter(c => groups[c]);
+
+  for (const cat of sortedCats) {
+    if (!groups[cat]) continue;
+    const sec = document.createElement("div");
+    sec.className = "category-section";
+    const title = document.createElement("div");
+    title.className = "category-title";
+    title.textContent = cat;
+    sec.appendChild(title);
+    const grid = document.createElement("div");
+    grid.className = "ch-grid";
+
+    for (const ch of groups[cat]) {
+      const a = document.createElement("a");
+      a.className = "ch-card";
+      a.href = "#";
+      const initials = (ch.name||'??').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+      const num = ch.num && ch.num < 9000 ? String(ch.num).padStart(3,'0') : '—';
+      a.innerHTML = `
+        <span class="ch-num">${num}</span>
+        ${ch.logo
+          ? `<img class="ch-logo" src="${ch.logo}" alt="" loading="lazy" onerror="this.outerHTML='<div class=ch-logo-ph>${initials}</div>'">`
+          : `<div class="ch-logo-ph">${initials}</div>`}
+        <span class="ch-name">${ch.name||''}</span>`;
+
+      a.addEventListener("click", e => {
+        e.preventDefault();
+        if (!ch.url) return;
+        let finalUrl = ch.url;
+        const headers = {};
+        if (ch.userAgent) headers["User-Agent"] = ch.userAgent;
+        if (ch.referrer)  headers["Referer"]    = ch.referrer;
+        if (Object.keys(headers).length > 0) {
+          const headersEncoded = encodeURIComponent(JSON.stringify(headers));
+          finalUrl = finalUrl + (finalUrl.includes('?') ? '&' : '?') + 'headers=' + headersEncoded;
+        }
+        window.open(finalUrl, "_blank", "noopener");
+      });
+      grid.appendChild(a);
+    }
+
+    sec.appendChild(grid);
+    content.appendChild(sec);
+  }
+}
+
+// Init
+renderPlatformBar();
+</script>
+</body>
+</html>
