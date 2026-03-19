@@ -182,40 +182,62 @@ header h1 {
 </div>
 
 <script>
+// Genera le sorgenti con tutti i proxy per un dato URL
+// Identico alla logica della pagina LG che funziona
+function makeSources(url) {
+  return [
+    "https://api.allorigins.win/raw?url=" + encodeURIComponent(url),
+    "https://corsproxy.io/?url=" + encodeURIComponent(url),
+    "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(url),
+    "https://thingproxy.freeboard.io/fetch/" + url,
+    "https://cors.eu.org/" + url,
+  ];
+}
+
 const PLATFORMS = {
   "LG": {
     label: "LG Channels",
     regions: { "it":"🇮🇹 Italia","us":"🇺🇸 USA","gb":"🇬🇧 UK","de":"🇩🇪 Germania","fr":"🇫🇷 Francia","es":"🇪🇸 Spagna","at":"🇦🇹 Austria","be":"🇧🇪 Belgio","ca":"🇨🇦 Canada","mx":"🇲🇽 Messico","au":"🇦🇺 Australia","nz":"🇳🇿 Nuova Zelanda","in":"🇮🇳 India","sg":"🇸🇬 Singapore","all":"🌐 Tutti" },
-    urlFn: r => `https://i.mjh.nz/LG/${r}.m3u8`,
+    // Per LG aggiungiamo anche apsattv come nella pagina originale
+    sourcesFn: r => [
+      "https://api.allorigins.win/raw?url=" + encodeURIComponent(`https://i.mjh.nz/LG/${r}.m3u8`),
+      "https://corsproxy.io/?url=" + encodeURIComponent(`https://i.mjh.nz/LG/${r}.m3u8`),
+      "https://corsproxy.io/?url=" + encodeURIComponent("https://www.apsattv.com/lgchannels_it.m3u"),
+      "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://www.apsattv.com/lgchannels_it.m3u"),
+      "https://corsproxy.io/?url=" + encodeURIComponent("https://www.apsattv.com/lg.m3u"),
+      "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://www.apsattv.com/lg.m3u"),
+      "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(`https://i.mjh.nz/LG/${r}.m3u8`),
+      "https://thingproxy.freeboard.io/fetch/https://i.mjh.nz/LG/" + r + ".m3u8",
+    ],
   },
   "PlutoTV": {
     label: "Pluto TV",
     regions: { "us":"🇺🇸 USA","gb":"🇬🇧 UK","de":"🇩🇪 Germania","fr":"🇫🇷 Francia","es":"🇪🇸 Spagna","it":"🇮🇹 Italia","ar":"🇦🇷 Argentina","br":"🇧🇷 Brasile","ca":"🇨🇦 Canada","cl":"🇨🇱 Cile","dk":"🇩🇰 Danimarca","mx":"🇲🇽 Messico","no":"🇳🇴 Norvegia","se":"🇸🇪 Svezia" },
-    urlFn: r => `https://i.mjh.nz/PlutoTV/${r}.m3u8`,
+    sourcesFn: r => makeSources(`https://i.mjh.nz/PlutoTV/${r}.m3u8`),
   },
   "SamsungTVPlus": {
     label: "Samsung TV+",
     regions: { "us":"🇺🇸 USA","gb":"🇬🇧 UK","de":"🇩🇪 Germania","fr":"🇫🇷 Francia","es":"🇪🇸 Spagna","it":"🇮🇹 Italia","at":"🇦🇹 Austria","ca":"🇨🇦 Canada","ch":"🇨🇭 Svizzera","in":"🇮🇳 India","kr":"🇰🇷 Corea" },
-    urlFn: r => `https://i.mjh.nz/SamsungTVPlus/${r}.m3u8`,
+    sourcesFn: r => makeSources(`https://i.mjh.nz/SamsungTVPlus/${r}.m3u8`),
   },
   "Plex": {
     label: "Plex",
     regions: { "us":"🇺🇸 USA","gb":"🇬🇧 UK","fr":"🇫🇷 Francia","es":"🇪🇸 Spagna","ca":"🇨🇦 Canada","au":"🇦🇺 Australia","nz":"🇳🇿 Nuova Zelanda","mx":"🇲🇽 Messico" },
-    urlFn: r => `https://i.mjh.nz/Plex/${r}.m3u8`,
+    sourcesFn: r => makeSources(`https://i.mjh.nz/Plex/${r}.m3u8`),
   },
-  "Roku":       { label: "Roku",         regions: { "all":"🌐 Tutti" }, urlFn: r => `https://i.mjh.nz/Roku/all.m3u8` },
-  "PBS":        { label: "PBS",          regions: { "all":"🌐 Tutti" }, urlFn: r => `https://i.mjh.nz/PBS/all.m3u8` },
-  "MeTV":       { label: "MeTV",         regions: { "all":"🌐 Tutti" }, urlFn: r => `https://i.mjh.nz/MeTV/all.m3u8` },
-  "Binge":      { label: "Binge",        regions: { "all":"🌐 Tutti" }, urlFn: r => `https://i.mjh.nz/Binge/all.m3u8` },
-  "Foxtel":     { label: "Foxtel",       regions: { "all":"🌐 Tutti" }, urlFn: r => `https://i.mjh.nz/Foxtel/all.m3u8` },
-  "Kayo":       { label: "Kayo",         regions: { "all":"🌐 Tutti" }, urlFn: r => `https://i.mjh.nz/Kayo/all.m3u8` },
-  "Flash":      { label: "Flash",        regions: { "all":"🌐 Tutti" }, urlFn: r => `https://i.mjh.nz/Flash/all.m3u8` },
-  "DStv":       { label: "DStv",         regions: { "all":"🌐 Tutti" }, urlFn: r => `https://i.mjh.nz/DStv/all.m3u8` },
-  "Singtel":    { label: "Singtel",      regions: { "all":"🌐 Tutti" }, urlFn: r => `https://i.mjh.nz/Singtel/all.m3u8` },
-  "SkyGo":      { label: "Sky Go",       regions: { "all":"🌐 Tutti" }, urlFn: r => `https://i.mjh.nz/SkyGo/all.m3u8` },
-  "SkySportNow":{ label: "Sky Sport Now",regions: { "all":"🌐 Tutti" }, urlFn: r => `https://i.mjh.nz/SkySportNow/all.m3u8` },
-  "frndly_tv":  { label: "Frndly TV",    regions: { "all":"🌐 Tutti" }, urlFn: r => `https://i.mjh.nz/frndly_tv/all.m3u8` },
-  "hgtv_go":    { label: "HGTV Go",      regions: { "all":"🌐 Tutti" }, urlFn: r => `https://i.mjh.nz/hgtv_go/all.m3u8` },
+  "Roku":        { label: "Roku",          regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/Roku/all.m3u8") },
+  "PBS":         { label: "PBS",           regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/PBS/all.m3u8") },
+  "MeTV":        { label: "MeTV",          regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/MeTV/all.m3u8") },
+  "Binge":       { label: "Binge",         regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/Binge/all.m3u8") },
+  "Foxtel":      { label: "Foxtel",        regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/Foxtel/all.m3u8") },
+  "Kayo":        { label: "Kayo",          regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/Kayo/all.m3u8") },
+  "Flash":       { label: "Flash",         regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/Flash/all.m3u8") },
+  "DStv":        { label: "DStv",          regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/DStv/all.m3u8") },
+  "Singtel":     { label: "Singtel",       regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/Singtel/all.m3u8") },
+  "SkyGo":       { label: "Sky Go",        regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/SkyGo/all.m3u8") },
+  "SkySportNow": { label: "Sky Sport Now", regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/SkySportNow/all.m3u8") },
+  "frndly_tv":   { label: "Frndly TV",     regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/frndly_tv/all.m3u8") },
+  "hgtv_go":     { label: "HGTV Go",       regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/hgtv_go/all.m3u8") },
 };
 
 const LANG_MAP = [
@@ -303,23 +325,12 @@ async function loadChannels() {
   document.getElementById("tip").classList.remove("show");
   document.getElementById("content").innerHTML = `<div class="ch-grid">${'<div class="skeleton"></div>'.repeat(12)}</div>`;
 
-  const baseUrl = PLATFORMS[activePlatform].urlFn(activeRegion);
-
-  // Stesso sistema della pagina LG che funziona
-  const sources = [
-    "https://api.allorigins.win/raw?url=" + encodeURIComponent(baseUrl),
-    "https://corsproxy.io/?url=" + encodeURIComponent(baseUrl),
-    "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(baseUrl),
-    "https://thingproxy.freeboard.io/fetch/" + baseUrl,
-    "https://cors.eu.org/" + baseUrl,
-  ];
-
-  const labels = ["allorigins","corsproxy","codetabs","thingproxy","cors.eu.org"];
+  const sources = PLATFORMS[activePlatform].sourcesFn(activeRegion);
   let text = null, lastErr = null;
 
   for (let i = 0; i < sources.length; i++) {
     try {
-      setStatus("loading", `Tentativo ${i+1}/${sources.length} (${labels[i]})...`);
+      setStatus("loading", `Tentativo ${i+1}/${sources.length}...`);
       const res = await fetch(sources[i]);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const t = await res.text();
