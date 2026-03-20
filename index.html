@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Free TV Channels</title>
+<title>LG Channels Italia</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap');
 :root {
@@ -44,33 +44,6 @@ header h1 {
 #status.err .dot { background: #e74c3c; box-shadow: 0 0 6px #e74c3c; }
 #status.loading .dot { background: var(--accent3); animation: pulse 1s ease-in-out infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.25} }
-.platform-bar {
-  display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 28px;
-  background: var(--surface); border-bottom: 1px solid var(--border); align-items: center;
-}
-.platform-bar label { font-size: 11px; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; text-transform: uppercase; margin-right: 4px; }
-.plat-btn {
-  background: var(--card); border: 1px solid var(--border); color: var(--muted);
-  border-radius: 20px; padding: 5px 14px; font-size: 11px;
-  font-family: 'Barlow Condensed', sans-serif; font-weight: 700; letter-spacing: .5px;
-  cursor: pointer; transition: all .2s; white-space: nowrap;
-}
-.plat-btn:hover { background: rgba(26,111,168,.15); border-color: var(--accent); color: var(--accent3); }
-.plat-btn.active { background: rgba(26,111,168,.2); border-color: var(--accent2); color: var(--accent3); }
-.region-bar {
-  display: flex; gap: 6px; flex-wrap: wrap; padding: 8px 28px;
-  background: var(--surface); border-bottom: 1px solid var(--border);
-  min-height: 44px; align-items: center;
-}
-.region-bar label { font-size: 11px; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; text-transform: uppercase; margin-right: 4px; }
-.reg-btn {
-  background: var(--card); border: 1px solid var(--border); color: var(--muted);
-  border-radius: 16px; padding: 4px 12px; font-size: 11px;
-  font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
-  cursor: pointer; transition: all .2s; white-space: nowrap;
-}
-.reg-btn:hover { background: rgba(26,111,168,.12); border-color: var(--accent); color: var(--accent3); }
-.reg-btn.active { background: rgba(26,111,168,.2); border-color: var(--accent2); color: var(--accent3); }
 .top-bar {
   display: flex; align-items: center; gap: 12px; padding: 12px 28px;
   background: var(--surface); border-bottom: 1px solid var(--border); flex-wrap: wrap;
@@ -115,15 +88,25 @@ header h1 {
 }
 #tip.show { display: block; }
 .content { padding: 24px 28px 48px; }
-.category-section { margin-bottom: 36px; }
-.category-title {
-  font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 11px;
-  letter-spacing: 3px; color: var(--muted); text-transform: uppercase;
-  margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 8px;
+.cat-section { margin-bottom: 32px; }
+.cat-title {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 13px;
+  letter-spacing: 3px; color: var(--accent3); text-transform: uppercase;
+  margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 2px solid rgba(33,150,243,.25);
+  display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none;
 }
-.category-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
-.ch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+.cat-title:hover { color: #fff; }
+.cat-title .arrow { font-size: 10px; color: var(--accent); transition: transform .2s; display: inline-block; }
+.cat-title.collapsed .arrow { transform: rotate(-90deg); }
+.cat-title .cnt {
+  font-size: 10px; font-weight: 600; color: var(--muted);
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1px 8px; margin-left: auto;
+}
+.cat-body { overflow: hidden; transition: max-height .3s ease; }
+.cat-body.collapsed { max-height: 0 !important; }
+.ch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; padding-bottom: 4px; }
 .ch-card {
   position: relative; aspect-ratio: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center; padding: 10px 8px 26px;
@@ -138,200 +121,100 @@ header h1 {
 }
 .ch-card:hover { background: #14192a; border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 6px 20px rgba(26,111,168,.18); }
 .ch-card:hover::before { opacity: 1; }
-.ch-card:active { transform: translateY(-1px); }
-.ch-num { position: absolute; top: 8px; left: 10px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent3); letter-spacing: .5px; opacity: .75; }
+.ch-num { position: absolute; top: 8px; left: 10px; font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent3); opacity: .75; }
 .ch-logo { width: 80px; height: 80px; object-fit: contain; border-radius: 6px; }
 .ch-logo-ph {
   width: 80px; height: 80px; border-radius: 10px;
   background: linear-gradient(135deg, var(--accent), var(--accent3));
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 16px; color: #fff; letter-spacing: 1px; text-align: center; padding: 4px;
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 16px; color: #fff; text-align: center; padding: 4px;
 }
 .ch-name { position: absolute; bottom: 7px; left: 0; right: 0; text-align: center; font-size: 10px; font-weight: 500; color: rgba(255,255,255,.85); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 8px; }
 .skeleton { background: linear-gradient(90deg, var(--card) 25%, #161d2e 50%, var(--card) 75%); background-size: 200% 100%; animation: shimmer 1.3s infinite; border-radius: 12px; aspect-ratio: 1; }
-@keyframes shimmer { 0% { background-position: 200%; } 100%{ background-position: -200%; } }
-.empty-state { grid-column: 1 / -1; color: var(--muted); padding: 60px; text-align: center; font-family: 'Barlow Condensed', sans-serif; font-size: 18px; letter-spacing: 2px; }
-.info-state { color: var(--muted); text-align: center; padding: 80px; font-family: 'Barlow Condensed', sans-serif; font-size: 18px; letter-spacing: 2px; }
+@keyframes shimmer { 0%{background-position:200%} 100%{background-position:-200%} }
+.empty-state { grid-column: 1/-1; color: var(--muted); padding: 60px; text-align: center; font-family: 'Barlow Condensed', sans-serif; font-size: 18px; letter-spacing: 2px; }
 </style>
 </head>
 <body>
 
 <header>
   <div class="logo-icon">📺</div>
-  <h1>Free TV Channels</h1>
+  <h1>LG Channels Italia</h1>
   <div class="header-right">
-    <span id="ch-count">Seleziona piattaforma</span>
-    <div id="status">
-      <div class="dot"></div>
-      <span id="status-txt">Pronto</span>
-    </div>
+    <span id="ch-count">Caricamento...</span>
+    <div id="status"><div class="dot"></div><span id="status-txt">Pronto</span></div>
   </div>
 </header>
 
-<div class="platform-bar"><label>Piattaforma:</label></div>
-<div class="region-bar" id="region-bar"><label>Regione:</label><span style="color:var(--muted);font-size:12px;">Seleziona una piattaforma</span></div>
 <div class="top-bar">
   <input id="search" type="text" placeholder="🔍 Cerca canale..." oninput="renderChannels()">
-  <button id="refresh-btn" onclick="loadChannels()" disabled>↺ Ricarica</button>
+  <button id="refresh-btn" onclick="loadChannels()">↺ Ricarica</button>
 </div>
 <div class="cat-filter" id="cat-filter"></div>
 <div id="err-banner"></div>
 <div id="tip">✓ Playlist caricata — clicca un canale per aprire lo stream</div>
 <div class="content" id="content">
-  <div class="info-state">SELEZIONA UNA PIATTAFORMA PER INIZIARE</div>
+  <div class="ch-grid"></div>
 </div>
 
 <script>
-// Genera le sorgenti con tutti i proxy per un dato URL
-// Identico alla logica della pagina LG che funziona
-function makeSources(url) {
-  return [
-    "https://api.allorigins.win/raw?url=" + encodeURIComponent(url),
-    "https://corsproxy.io/?url=" + encodeURIComponent(url),
-    "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(url),
-    "https://thingproxy.freeboard.io/fetch/" + url,
-    "https://cors.eu.org/" + url,
-  ];
-}
-
-const PLATFORMS = {
-  "LG": {
-    label: "LG Channels",
-    regions: { "it":"🇮🇹 Italia","us":"🇺🇸 USA","gb":"🇬🇧 UK","de":"🇩🇪 Germania","fr":"🇫🇷 Francia","es":"🇪🇸 Spagna","at":"🇦🇹 Austria","be":"🇧🇪 Belgio","ca":"🇨🇦 Canada","mx":"🇲🇽 Messico","au":"🇦🇺 Australia","nz":"🇳🇿 Nuova Zelanda","in":"🇮🇳 India","sg":"🇸🇬 Singapore","all":"🌐 Tutti" },
-    // Per LG aggiungiamo anche apsattv come nella pagina originale
-    sourcesFn: r => [
-      "https://api.allorigins.win/raw?url=" + encodeURIComponent(`https://i.mjh.nz/LG/${r}.m3u8`),
-      "https://corsproxy.io/?url=" + encodeURIComponent(`https://i.mjh.nz/LG/${r}.m3u8`),
-      "https://corsproxy.io/?url=" + encodeURIComponent("https://www.apsattv.com/lgchannels_it.m3u"),
-      "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://www.apsattv.com/lgchannels_it.m3u"),
-      "https://corsproxy.io/?url=" + encodeURIComponent("https://www.apsattv.com/lg.m3u"),
-      "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://www.apsattv.com/lg.m3u"),
-      "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(`https://i.mjh.nz/LG/${r}.m3u8`),
-      "https://thingproxy.freeboard.io/fetch/https://i.mjh.nz/LG/" + r + ".m3u8",
-    ],
-  },
-  "PlutoTV": {
-    label: "Pluto TV",
-    regions: { "us":"🇺🇸 USA","gb":"🇬🇧 UK","de":"🇩🇪 Germania","fr":"🇫🇷 Francia","es":"🇪🇸 Spagna","it":"🇮🇹 Italia","ar":"🇦🇷 Argentina","br":"🇧🇷 Brasile","ca":"🇨🇦 Canada","cl":"🇨🇱 Cile","dk":"🇩🇰 Danimarca","mx":"🇲🇽 Messico","no":"🇳🇴 Norvegia","se":"🇸🇪 Svezia" },
-    sourcesFn: r => makeSources(`https://i.mjh.nz/PlutoTV/${r}.m3u8`),
-  },
-  "SamsungTVPlus": {
-    label: "Samsung TV+",
-    regions: { "us":"🇺🇸 USA","gb":"🇬🇧 UK","de":"🇩🇪 Germania","fr":"🇫🇷 Francia","es":"🇪🇸 Spagna","it":"🇮🇹 Italia","at":"🇦🇹 Austria","ca":"🇨🇦 Canada","ch":"🇨🇭 Svizzera","in":"🇮🇳 India","kr":"🇰🇷 Corea" },
-    sourcesFn: r => makeSources(`https://i.mjh.nz/SamsungTVPlus/${r}.m3u8`),
-  },
-  "Plex": {
-    label: "Plex",
-    regions: { "us":"🇺🇸 USA","gb":"🇬🇧 UK","fr":"🇫🇷 Francia","es":"🇪🇸 Spagna","ca":"🇨🇦 Canada","au":"🇦🇺 Australia","nz":"🇳🇿 Nuova Zelanda","mx":"🇲🇽 Messico" },
-    sourcesFn: r => makeSources(`https://i.mjh.nz/Plex/${r}.m3u8`),
-  },
-  "Roku":        { label: "Roku",          regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/Roku/all.m3u8") },
-  "PBS":         { label: "PBS",           regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/PBS/all.m3u8") },
-  "MeTV":        { label: "MeTV",          regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/MeTV/all.m3u8") },
-  "Binge":       { label: "Binge",         regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/Binge/all.m3u8") },
-  "Foxtel":      { label: "Foxtel",        regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/Foxtel/all.m3u8") },
-  "Kayo":        { label: "Kayo",          regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/Kayo/all.m3u8") },
-  "Flash":       { label: "Flash",         regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/Flash/all.m3u8") },
-  "DStv":        { label: "DStv",          regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/DStv/all.m3u8") },
-  "Singtel":     { label: "Singtel",       regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/Singtel/all.m3u8") },
-  "SkyGo":       { label: "Sky Go",        regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/SkyGo/all.m3u8") },
-  "SkySportNow": { label: "Sky Sport Now", regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/SkySportNow/all.m3u8") },
-  "frndly_tv":   { label: "Frndly TV",     regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/frndly_tv/all.m3u8") },
-  "hgtv_go":     { label: "HGTV Go",       regions: { "all":"🌐 Tutti" }, sourcesFn: r => makeSources("https://i.mjh.nz/hgtv_go/all.m3u8") },
-};
-
-const LANG_MAP = [
-  { lang: "🇮🇹 Italiano",  keys: ["italian","italiano","italy"," it ","(it)","rai","mediaset","canale 5","italia 1","rete 4","la7","dmax","nove","cielo","focus","real time","tv2000","sky tg","sportitalia","boing","cartoonito"] },
-  { lang: "🇬🇧 English",   keys: ["english","united kingdom"," uk ","(uk)"," us ","(us)","united states","bbc","itv","channel 4","channel 5","sky one","discovery","nat geo","cnn","fox","nbc","abc","cbs","hbo","comedy central","cartoon network","nickelodeon","paramount","mtv","animal planet","amc","syfy"] },
-  { lang: "🇩🇪 Deutsch",   keys: ["german","deutsch","germany"," de ","(de)","ard","zdf","sat.1","pro7","rtl","kabel","vox","sixx","sport1","tagesschau"] },
-  { lang: "🇫🇷 Français",  keys: ["french","français","france"," fr ","(fr)","tf1","france 2","france 3","m6","canal+","arte","bfm","cnews","lci","gulli"] },
-  { lang: "🇪🇸 Español",   keys: ["spanish","español","spain","espana","españa"," es ","(es)","la1","la2","telecinco","antena 3","cuatro","la sexta","rtve"] },
-  { lang: "🇵🇹 Português", keys: ["portuguese","português","portugal"," pt ","(pt)","rtp","sic","tvi"] },
-  { lang: "🇧🇷 Português (BR)", keys: ["brasil","brazil"," br ","(br)","globo","record","sbt","band","sportv"] },
-  { lang: "🇳🇱 Nederlands",keys: ["dutch","netherlands","holland"," nl ","(nl)","npo","rtl4","rtl5"] },
-  { lang: "🇵🇱 Polski",    keys: ["polish","poland","polska"," pl ","(pl)","tvp","polsat","tvn"] },
-  { lang: "🇸🇪 Svenska",   keys: ["swedish","sweden","sverige"," se ","(se)","svt","tv4","kanal 5"] },
-  { lang: "🇷🇺 Русский",   keys: ["russian","russia"," ru ","(ru)","perviy","russia 1","ntv","ren tv"] },
-  { lang: "🇹🇷 Türkçe",    keys: ["turkish","turkey","türkiye"," tr ","(tr)","trt","atv","kanal d","show tv"] },
-  { lang: "🇦🇷 Español (LA)", keys: ["latin","latinoamerica","argentina","mexico","colombia","chile"," la ","(la)","telefe","azteca","univision","telemundo"] },
-  { lang: "🇨🇳 中文",       keys: ["chinese","china","taiwan","mandarin","cantonese","cctv","tvbs","phoenix tv"] },
-  { lang: "🇯🇵 日本語",     keys: ["japanese","japan"," jp ","(jp)","nhk","tv asahi","fuji tv"] },
-  { lang: "🇰🇷 한국어",     keys: ["korean","korea"," kr ","(kr)","kbs","mbc","arirang"] },
-  { lang: "🇮🇳 Hindi",     keys: ["hindi","india","indian"," in ","(in)","zee","star plus","sony","colors","aaj tak","ndtv"] },
-  { lang: "🇸🇦 عربي",      keys: ["arabic","arab","arabe"," ar ","(ar)","al jazeera","al arabiya","mbc","rotana"] },
-  { lang: "🇦🇺 Australia",  keys: ["australia","australian"," au ","(au)","abc australia","nine","seven","ten ","sbs"] },
-  { lang: "🇳🇿 New Zealand",keys: ["new zealand","zealand"," nz ","(nz)","tvnz","three nz","maori"] },
-  { lang: "🎬 Film & Serie",keys: ["movie","movies","cinema","film","serie","drama","thriller","horror","comedy","action","western","romance"] },
-  { lang: "⚽ Sport",       keys: ["sport","sports","football","soccer","tennis","golf","racing","nfl","nba","nhl","mlb","f1","motor"] },
-  { lang: "🎵 Musica",      keys: ["music","musical","vh1","radio","country music","jazz","hits","pop"] },
-  { lang: "👶 Kids",        keys: ["kid","kids","child","children","junior","cartoon","anime","nickelodeon","disney","boomerang","baby"] },
-  { lang: "📰 News",        keys: ["news","noticias","nouvelles","nachrichten","tg ","tgcom","euronews","bloomberg","sky news","fox news","cnn","bbc news"] },
-  { lang: "🌿 Nature/Doc",  keys: ["nature","natural","document","discovery","national geographic","nat geo","history","science","planet","animal","wildlife"] },
+const SOURCES = [
+  "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://i.mjh.nz/LG/it.m3u8"),
+  "https://corsproxy.io/?url=" + encodeURIComponent("https://i.mjh.nz/LG/it.m3u8"),
+  "https://corsproxy.io/?url=" + encodeURIComponent("https://www.apsattv.com/lgchannels_it.m3u"),
+  "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://www.apsattv.com/lgchannels_it.m3u"),
+  "https://corsproxy.io/?url=" + encodeURIComponent("https://www.apsattv.com/lg.m3u"),
+  "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://www.apsattv.com/lg.m3u"),
+  "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent("https://i.mjh.nz/LG/it.m3u8"),
+  "https://thingproxy.freeboard.io/fetch/https://i.mjh.nz/LG/it.m3u8",
 ];
 
-function getCategory(name, group) {
-  const n = (" " + (name||"") + " " + (group||"") + " ").toLowerCase();
-  for (const { lang, keys } of LANG_MAP) {
-    if (keys.some(k => n.includes(k))) return lang;
-  }
-  return "🌐 Altro";
+let channelsData = [], activeCat = "Tutti";
+
+function setStatus(s, t) {
+  document.getElementById("status").className = s;
+  document.getElementById("status-txt").textContent = t;
 }
-
-let channelsData = [], activeCat = "Tutti", activePlatform = null, activeRegion = null;
-
-function setStatus(state, txt) {
-  const el = document.getElementById("status");
-  el.className = state;
-  document.getElementById("status-txt").textContent = txt;
-}
-
 function showErr(msg) {
   const b = document.getElementById("err-banner");
-  if (msg) { b.textContent = "⚠ " + msg; b.classList.add("show"); }
-  else b.classList.remove("show");
+  msg ? (b.textContent = "⚠ " + msg, b.classList.add("show")) : b.classList.remove("show");
 }
 
 function parseM3U(text) {
-  const lines = text.split('\n');
-  const channels = [];
-  let current = null;
+  const channels = [], lines = text.split('\n');
+  let cur = null;
   for (const line of lines) {
     const l = line.trim();
     if (l.startsWith('#EXTINF')) {
-      current = {};
-      const nameMatch = l.match(/,(.+)$/); if (nameMatch) current.name = nameMatch[1].trim();
-      const logoMatch = l.match(/tvg-logo="([^"]+)"/); if (logoMatch) current.logo = logoMatch[1];
-      const numMatch = l.match(/tvg-chno="([^"]+)"/); if (numMatch) current.num = parseInt(numMatch[1]) || 9999;
-      const groupMatch = l.match(/group-title="([^"]+)"/); if (groupMatch) current.group = groupMatch[1];
-      const uaMatch = l.match(/user-agent="([^"]+)"/i); if (uaMatch) current.userAgent = uaMatch[1];
-      const refMatch = l.match(/referrer="([^"]+)"/i) || l.match(/referer="([^"]+)"/i); if (refMatch) current.referrer = refMatch[1];
-    } else if (l.startsWith('#EXTVLCOPT') && current) {
-      const uaVlc = l.match(/http-user-agent=(.+)$/i); if (uaVlc) current.userAgent = uaVlc[1].trim();
-      const refVlc = l.match(/http-referrer=(.+)$/i); if (refVlc) current.referrer = refVlc[1].trim();
-    } else if ((l.startsWith('http') || l.startsWith('rtmp')) && current) {
-      current.url = l;
-      current.cat = getCategory(current.name || '', current.group || '');
-      channels.push(current); current = null;
+      cur = {};
+      const m = l.match(/,(.+)$/);        if (m) cur.name  = m[1].trim();
+      const lo = l.match(/tvg-logo="([^"]+)"/); if (lo) cur.logo = lo[1];
+      const nu = l.match(/tvg-chno="([^"]+)"/); if (nu) cur.num  = parseInt(nu[1]) || 9999;
+      const gr = l.match(/group-title="([^"]+)"/); if (gr) cur.group = gr[1];
+      const ua = l.match(/user-agent="([^"]+)"/i); if (ua) cur.userAgent = ua[1];
+      const rf = l.match(/referrer="([^"]+)"/i) || l.match(/referer="([^"]+)"/i); if (rf) cur.referrer = rf[1];
+    } else if (l.startsWith('#EXTVLCOPT') && cur) {
+      const ua = l.match(/http-user-agent=(.+)$/i); if (ua) cur.userAgent = ua[1].trim();
+      const rf = l.match(/http-referrer=(.+)$/i);   if (rf) cur.referrer  = rf[1].trim();
+    } else if ((l.startsWith('http') || l.startsWith('rtmp')) && cur) {
+      cur.url = l; channels.push(cur); cur = null;
     }
   }
   return channels;
 }
 
 async function loadChannels() {
-  if (!activePlatform || !activeRegion) return;
   document.getElementById("refresh-btn").disabled = true;
   setStatus("loading", "Carico playlist...");
   showErr(null);
   document.getElementById("tip").classList.remove("show");
-  document.getElementById("content").innerHTML = `<div class="ch-grid">${'<div class="skeleton"></div>'.repeat(12)}</div>`;
+  document.getElementById("content").innerHTML = `<div class="ch-grid">${Array(12).fill('<div class="skeleton"></div>').join('')}</div>`;
 
-  const sources = PLATFORMS[activePlatform].sourcesFn(activeRegion);
   let text = null, lastErr = null;
-
-  for (let i = 0; i < sources.length; i++) {
+  for (let i = 0; i < SOURCES.length; i++) {
     try {
-      setStatus("loading", `Tentativo ${i+1}/${sources.length}...`);
-      const res = await fetch(sources[i]);
+      setStatus("loading", `Tentativo ${i+1}/${SOURCES.length}...`);
+      const res = await fetch(SOURCES[i]);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const t = await res.text();
       if (t && t.includes('#EXTINF')) { text = t; break; }
@@ -342,7 +225,7 @@ async function loadChannels() {
   try {
     if (!text) throw lastErr || new Error("Tutti i proxy hanno fallito");
     channelsData = parseM3U(text);
-    channelsData.sort((a, b) => (a.num || 9999) - (b.num || 9999));
+    channelsData.sort((a, b) => (a.num||9999) - (b.num||9999));
     document.getElementById("ch-count").textContent = `${channelsData.length} canali`;
     setStatus("ok", "Online ✓");
     document.getElementById("tip").classList.add("show");
@@ -358,53 +241,19 @@ async function loadChannels() {
   document.getElementById("refresh-btn").disabled = false;
 }
 
-function selectPlatform(platKey) {
-  activePlatform = platKey; activeRegion = null; channelsData = [];
-  document.querySelectorAll('.plat-btn').forEach(b => b.classList.toggle('active', b.dataset.plat === platKey));
-  const regionBar = document.getElementById("region-bar");
-  regionBar.innerHTML = '<label>Regione:</label>';
-  const regions = PLATFORMS[platKey].regions;
-  const keys = Object.keys(regions);
-  keys.forEach(rk => {
-    const btn = document.createElement("button");
-    btn.className = "reg-btn"; btn.dataset.reg = rk; btn.textContent = regions[rk];
-    btn.onclick = () => selectRegion(rk);
-    regionBar.appendChild(btn);
-  });
-  if (keys.length === 1) { selectRegion(keys[0]); }
-  else {
-    document.getElementById("content").innerHTML = '<div class="info-state">SELEZIONA UNA REGIONE</div>';
-    document.getElementById("ch-count").textContent = "Seleziona regione";
-    document.getElementById("cat-filter").innerHTML = "";
-    document.getElementById("tip").classList.remove("show");
-    showErr(null); setStatus("", "Pronto");
-  }
-}
-
-function selectRegion(regKey) {
-  activeRegion = regKey;
-  document.querySelectorAll('.reg-btn').forEach(b => b.classList.toggle('active', b.dataset.reg === regKey));
-  document.getElementById("refresh-btn").disabled = false;
-  loadChannels();
-}
-
-function renderPlatformBar() {
-  const bar = document.querySelector('.platform-bar');
-  bar.innerHTML = '<label>Piattaforma:</label>';
-  Object.keys(PLATFORMS).forEach(pk => {
-    const btn = document.createElement("button");
-    btn.className = "plat-btn"; btn.dataset.plat = pk; btn.textContent = PLATFORMS[pk].label;
-    btn.onclick = () => selectPlatform(pk);
-    bar.appendChild(btn);
+function sortedGroupKeys(groups) {
+  return Object.keys(groups).sort((a,b) => {
+    if (a === "—") return 1; if (b === "—") return -1; return a.localeCompare(b, 'it');
   });
 }
 
 function renderCatFilter() {
   const el = document.getElementById("cat-filter");
   el.innerHTML = "";
-  const existingCats = new Set(channelsData.map(c => c.cat));
-  const allCats = ["Tutti", ...LANG_MAP.map(l => l.lang), "🌐 Altro"];
-  allCats.filter(c => c === "Tutti" || existingCats.has(c)).forEach(cat => {
+  const keys = sortedGroupKeys(Object.fromEntries(
+    Array.from(new Set(channelsData.map(c => c.group || "—"))).map(k => [k, true])
+  ));
+  ["Tutti", ...keys].forEach(cat => {
     const btn = document.createElement("button");
     btn.className = "cat-btn" + (cat === activeCat ? " active" : "");
     btn.textContent = cat;
@@ -413,17 +262,48 @@ function renderCatFilter() {
   });
 }
 
+function buildCard(ch) {
+  const a = document.createElement("a"); a.className = "ch-card"; a.href = "#";
+  const initials = (ch.name||'??').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+  const num = ch.num && ch.num < 9000 ? String(ch.num).padStart(3,'0') : '—';
+  a.innerHTML = `<span class="ch-num">${num}</span>
+    ${ch.logo ? `<img class="ch-logo" src="${ch.logo}" alt="" loading="lazy" onerror="this.outerHTML='<div class=ch-logo-ph>${initials}</div>'">` : `<div class="ch-logo-ph">${initials}</div>`}
+    <span class="ch-name">${ch.name||''}</span>`;
+  a.addEventListener("click", e => {
+    e.preventDefault(); if (!ch.url) return;
+    let url = ch.url;
+    const h = {};
+    if (ch.userAgent) h["User-Agent"] = ch.userAgent;
+    if (ch.referrer)  h["Referer"]    = ch.referrer;
+    if (Object.keys(h).length) url += (url.includes('?')?'&':'?') + 'headers=' + encodeURIComponent(JSON.stringify(h));
+    window.open(url, "_blank", "noopener");
+  });
+  return a;
+}
+
+function toggle(titleEl, bodyEl) {
+  const col = bodyEl.classList.contains('collapsed');
+  if (col) {
+    bodyEl.style.maxHeight = bodyEl.scrollHeight + 'px';
+    bodyEl.classList.remove('collapsed'); titleEl.classList.remove('collapsed');
+    bodyEl.addEventListener('transitionend', () => { if (!bodyEl.classList.contains('collapsed')) bodyEl.style.maxHeight = 'none'; }, {once:true});
+  } else {
+    bodyEl.style.maxHeight = bodyEl.scrollHeight + 'px';
+    requestAnimationFrame(() => { bodyEl.classList.add('collapsed'); titleEl.classList.add('collapsed'); });
+  }
+}
+
 function renderChannels() {
   const q = document.getElementById("search").value.toLowerCase();
   const filtered = channelsData.filter(c => {
     const ms = !q || (c.name||'').toLowerCase().includes(q) || String(c.num).includes(q);
-    const mc = activeCat === "Tutti" || c.cat === activeCat;
+    const mc = activeCat === "Tutti" || (c.group||"—") === activeCat;
     return ms && mc;
   });
-  const groups = {};
-  for (const ch of filtered) { if (!groups[ch.cat]) groups[ch.cat] = []; groups[ch.cat].push(ch); }
+
   const content = document.getElementById("content");
   content.innerHTML = "";
+
   if (filtered.length === 0) {
     const g = document.createElement("div"); g.className = "ch-grid";
     g.innerHTML = '<div class="empty-state">NESSUN CANALE TROVATO</div>';
@@ -431,38 +311,31 @@ function renderChannels() {
     document.getElementById("ch-count").textContent = `0 / ${channelsData.length} canali`;
     return;
   }
+
   document.getElementById("ch-count").textContent = `${filtered.length} / ${channelsData.length} canali`;
-  const catOrder = ["Tutti", ...LANG_MAP.map(l => l.lang), "🌐 Altro"];
-  [...new Set([...catOrder, ...Object.keys(groups)])].filter(c => groups[c]).forEach(cat => {
-    const sec = document.createElement("div"); sec.className = "category-section";
-    const title = document.createElement("div"); title.className = "category-title"; title.textContent = cat;
-    sec.appendChild(title);
+
+  const groups = {};
+  for (const ch of filtered) { const k = ch.group||"—"; if (!groups[k]) groups[k]=[]; groups[k].push(ch); }
+
+  for (const key of sortedGroupKeys(groups)) {
+    const chs = groups[key];
+    const sec = document.createElement("div"); sec.className = "cat-section";
+
+    const titleEl = document.createElement("div"); titleEl.className = "cat-title";
+    titleEl.innerHTML = `<span class="arrow">▾</span>${key}<span class="cnt">${chs.length}</span>`;
+
+    const bodyEl = document.createElement("div"); bodyEl.className = "cat-body"; bodyEl.style.maxHeight = "none";
     const grid = document.createElement("div"); grid.className = "ch-grid";
-    groups[cat].forEach(ch => {
-      const a = document.createElement("a"); a.className = "ch-card"; a.href = "#";
-      const initials = (ch.name||'??').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
-      const num = ch.num && ch.num < 9000 ? String(ch.num).padStart(3,'0') : '—';
-      a.innerHTML = `<span class="ch-num">${num}</span>
-        ${ch.logo ? `<img class="ch-logo" src="${ch.logo}" alt="" loading="lazy" onerror="this.outerHTML='<div class=ch-logo-ph>${initials}</div>'">` : `<div class="ch-logo-ph">${initials}</div>`}
-        <span class="ch-name">${ch.name||''}</span>`;
-      a.addEventListener("click", e => {
-        e.preventDefault(); if (!ch.url) return;
-        let finalUrl = ch.url;
-        const headers = {};
-        if (ch.userAgent) headers["User-Agent"] = ch.userAgent;
-        if (ch.referrer)  headers["Referer"]    = ch.referrer;
-        if (Object.keys(headers).length > 0) {
-          finalUrl += (finalUrl.includes('?') ? '&' : '?') + 'headers=' + encodeURIComponent(JSON.stringify(headers));
-        }
-        window.open(finalUrl, "_blank", "noopener");
-      });
-      grid.appendChild(a);
-    });
-    sec.appendChild(grid); content.appendChild(sec);
-  });
+    for (const ch of chs) grid.appendChild(buildCard(ch));
+
+    bodyEl.appendChild(grid);
+    titleEl.onclick = () => toggle(titleEl, bodyEl);
+    sec.appendChild(titleEl); sec.appendChild(bodyEl);
+    content.appendChild(sec);
+  }
 }
 
-renderPlatformBar();
+loadChannels();
 </script>
 </body>
 </html>
